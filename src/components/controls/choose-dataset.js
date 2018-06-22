@@ -20,9 +20,22 @@ class ChooseDataset extends React.Component {
     return { base: {} };
   }
   render() {
-    /* if the manifest file hasn't loaded (i.e. availableDatasets doesn't exist) or
-    the datapath hasn't been set (can happen on initial page load), then don't render a drop-down */
-    if (!this.props.availableDatasets || !this.props.datapath) return null;
+    /* If we're running without a manifest (or it hasn't loaded yet), show the
+       raw datapath if we have one, otherwise don't render anything.  In
+       sans-manifest mode, this helps the user know what they're looking at.
+     */
+    if (!this.props.availableDatasets) {
+      if (this.props.datapath) {
+        return (
+          <span style={{ fontSize: 14 }}>
+            { this.props.datapath }
+          </span>
+        );
+      } else {
+        return null;
+      }
+    }
+
     const styles = this.getStyles();
     /* analyse the current route in order to adjust the dataset selection choices.
     paramFields is an object with keys "virus" and potentially "lineage" and "duration"
